@@ -12,3 +12,12 @@
 hs_err_pid*
 
 target/
+
+.idea/
+
+src/main/resources/twitter4j.properties
+src/main/resources/application.properties
+
+twitter-pic-stream.iml
+
+*.log
