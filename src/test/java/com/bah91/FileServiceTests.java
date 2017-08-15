@@ -50,7 +50,7 @@ public class FileServiceTests {
 
     @Test
     public void test_Can_Upload_File_From_URL() {
-        fileService.processImage("http://dreamatico.com/data_images/bear/bear-5.jpg");
+        fileService.processImage("http://dreamatico.com/data_images/bear/bear-5.jpg", "It's a bear!");
     }
 
 }
