@@ -7,6 +7,7 @@ import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ import java.util.UUID;
  */
 @Service
 public class FileService {
+
+    @Autowired
+    RedisService redisService;
 
     private DbxClientV2 client;
 
@@ -63,7 +67,13 @@ public class FileService {
             for(Metadata entry : entries) {
                 GetTemporaryLinkResult tempLink = getClient()
                         .files().getTemporaryLink(entry.getPathDisplay());
-                ImageContainer image = new ImageContainer(entry.getName(), tempLink.getLink());
+
+                String description = redisService.retrieve(entry.getName());
+
+                if(description==null) description = "#BK2018";
+
+                ImageContainer image = new ImageContainer(entry.getName(), tempLink.getLink(),
+                        description);
                 images.add(image);
             }
 
@@ -86,7 +96,7 @@ public class FileService {
         return null;
     }
 
-    public boolean processImage(String imageUrl) {
+    public boolean processImage(String imageUrl, String text) {
         try {
             RenderedImage image = fetchImage(imageUrl);
             String uuid = UUID.randomUUID().toString();
@@ -94,6 +104,7 @@ public class FileService {
             String path = tempFileDir  + filename;
             writeTempFile(image, path);
             uploadFile(filename, path);
+            redisService.store(filename, text);
             return true;
         } catch (IOException ex){
             log.error("Could not process image("

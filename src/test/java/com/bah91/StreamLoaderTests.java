@@ -1,5 +1,6 @@
 package com.bah91;
 
+import com.bah91.services.StreamLoader;
 import org.junit.Test;
 
 /**
@@ -9,8 +10,10 @@ public class StreamLoaderTests {
 
 
     @Test
-    public void Given_Creds_Login() {
-
+    public void Test_Remove_URL() {
+        StreamLoader streamLoader = new StreamLoader();
+        System.out.println(streamLoader
+                .extractText("#BK2018 http://blahbalg,com lookin good!"));
     }
 
 

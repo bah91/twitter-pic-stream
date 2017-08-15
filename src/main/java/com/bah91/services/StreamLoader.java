@@ -30,7 +30,7 @@ public class StreamLoader {
 
     private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    StreamLoader() {
+    public StreamLoader() {
         init();
     }
 
@@ -62,8 +62,15 @@ public class StreamLoader {
 
     private void processMediaEntities(Status status) {
         for (MediaEntity entity: status.getMediaEntities()) {
-            fileService.processImage(entity.getMediaURL());
+            fileService.processImage(entity.getMediaURL(),
+                    extractText("@" +
+                            status.getUser().getScreenName()
+                            + " - " + status.getText()));
         }
+    }
+
+    public String extractText(String status) {
+        return status.replaceAll("https?://\\S+\\s?", "");
     }
 
 
